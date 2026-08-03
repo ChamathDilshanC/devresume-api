@@ -1,3 +1,12 @@
+pub mod workers;
+
+pub use workers::{
+    AIJobPayload, AIJobResult, AIWorker, CleanupWorker, EmbeddingJobPayload, EmbeddingJobResult,
+    EmbeddingWorker, Job, JobQueueEngine, JobType, NotificationJobPayload, NotificationWorker,
+    PortfolioJobPayload, PortfolioJobResult, PortfolioWorker, ResumeJobPayload, ResumeJobResult,
+    ResumeWorker, SyncJobPayload, SyncJobResult, SyncWorker,
+};
+
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
