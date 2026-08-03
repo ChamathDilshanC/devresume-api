@@ -29,21 +29,45 @@ Never add any AI assistant attribution.
 
 ## BEFORE WRITING ANY CODE
 
-1. Read `ARCHITECTURE.md`
-2. Read `docs/DATABASE.md`
-3. Read `docs/API_SPEC.md`
-4. Read `docs/DOMAIN_MODEL.md`
-5. Read `docs/FEATURES.md`
-6. Understand the existing workspace.
-7. Detect all existing crates.
-8. Detect all implemented endpoints.
-9. Detect existing SQL migrations.
-10. Never duplicate existing functionality.
-11. Prefer refactoring over rewriting.
-12. Never change public APIs unless necessary.
-13. Never delete working code.
-14. Preserve backward compatibility.
-15. Update documentation after every completed module.
+Follow this exact reading order before touching any file:
+
+### Step 1 — Architecture & Decisions
+1. Read `ARCHITECTURE.md` — understand the full system
+2. Read `docs/ADR/0001-rust-axum.md` — why Axum, not Actix
+3. Read `docs/ADR/0002-sqlx.md` — why SQLx, not Diesel
+4. Read `docs/ADR/0003-pgvector.md` — why pgvector, not Qdrant
+5. Read `docs/ADR/0004-modular-monolith.md` — why modular monolith
+6. Read `docs/ADR/0005-ai-provider-abstraction.md` — AIProvider trait design
+7. Read `docs/ADR/0006-background-workers.md` — PostgreSQL job queue design
+
+### Step 2 — Data & Domain
+8. Read `docs/DATABASE.md` — full schema, indexes, relationships
+9. Read `docs/DOMAIN_MODEL.md` — entity relationships, state machines
+
+### Step 3 — API Surface
+10. Read `docs/API_SPEC.md` — full endpoint specification
+11. Review `docs/API/*.http` — concrete request/response examples
+
+### Step 4 — AI Prompts
+12. Read `docs/prompts/` relevant to your current module
+
+### Step 5 — Implementation Rules
+13. Read `docs/AI/ARCHITECTURE_RULES.md` — forbidden dependency boundaries
+14. Read `docs/AI/DEVELOPMENT_RULES.md` — mandatory development rules
+15. Read `docs/AI/CODING_GUIDELINES.md` — Rust code standards
+16. Read `docs/AI/MODULE_CHECKLIST.md` — phase-by-phase checklist
+17. Read `docs/AI/DONE_DEFINITION.md` — commit acceptance criteria
+
+### Step 6 — Workspace Scan
+18. Detect all existing crates in `crates/`
+19. Detect all implemented Axum routes in `apps/api/src/routes.rs`
+20. Detect all existing SQL migrations in `migrations/`
+21. Never duplicate existing functionality
+22. Prefer refactoring over rewriting
+23. Never change public APIs unless necessary
+24. Never delete working code
+25. Preserve backward compatibility
+26. Update documentation after every completed module
 
 ---
 

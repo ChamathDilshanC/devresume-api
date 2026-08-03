@@ -1,0 +1,82 @@
+### DevResume AI — GitHub Integration API Examples
+
+@host = http://localhost:8080
+@token = <paste_access_token_here>
+
+### ─────────────────────────────────────────────
+### LIST SYNCED REPOSITORIES
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/repositories
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### TRIGGER FULL SYNC FROM GITHUB
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/repositories/sync
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sync_type": "full"
+}
+
+### ─────────────────────────────────────────────
+### TRIGGER INCREMENTAL SYNC
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/repositories/sync
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sync_type": "incremental"
+}
+
+### ─────────────────────────────────────────────
+### GET SINGLE REPOSITORY
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/repositories/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GET REPOSITORY COMMITS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/repositories/550e8400-e29b-41d4-a716-446655440000/commits?page=1&limit=20
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GET REPOSITORY TECHNOLOGIES
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/repositories/550e8400-e29b-41d4-a716-446655440000/technologies
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GET REPOSITORY STATS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/repositories/550e8400-e29b-41d4-a716-446655440000/stats
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DELETE / DISCONNECT REPOSITORY
+### ─────────────────────────────────────────────
+
+DELETE {{host}}/api/v1/repositories/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GITHUB WEBHOOK (Called by GitHub, not directly)
+### Requires X-Hub-Signature-256 header with HMAC-SHA256
+### ─────────────────────────────────────────────
+
+# POST {{host}}/api/v1/webhooks/github
+# X-Hub-Signature-256: sha256=<computed_hmac>
+# X-GitHub-Event: push
+# Content-Type: application/json
+#
+# { ... github webhook payload ... }

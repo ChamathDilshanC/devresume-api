@@ -1,0 +1,106 @@
+### DevResume AI — Resume API Examples
+
+@host = http://localhost:8080
+@token = <paste_access_token_here>
+
+### ─────────────────────────────────────────────
+### LIST ALL RESUME VERSIONS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/resumes
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GENERATE NEW RESUME (AI-powered)
+### ─────────────────────────────────────────────
+
+# @name generate
+POST {{host}}/api/v1/resumes/generate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template": "developer",
+  "target_role": "Senior Rust Engineer",
+  "include_repositories": true,
+  "include_skills": true,
+  "style": "modern",
+  "ai_enhance": true
+}
+
+### ─────────────────────────────────────────────
+### GENERATE ATS-OPTIMIZED RESUME
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/resumes/generate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template": "ats",
+  "target_role": "Backend Engineer",
+  "job_description": "We are looking for a backend engineer with experience in Rust, PostgreSQL, and Kubernetes...",
+  "ai_enhance": true
+}
+
+### ─────────────────────────────────────────────
+### GET SPECIFIC RESUME VERSION
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/resumes/{{generate.response.body.$.id}}
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DOWNLOAD AS PDF
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/resumes/{{generate.response.body.$.id}}/download?format=pdf
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DOWNLOAD AS DOCX
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/resumes/{{generate.response.body.$.id}}/download?format=docx
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DOWNLOAD AS MARKDOWN
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/resumes/{{generate.response.body.$.id}}/download?format=markdown
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### SET AS DEFAULT RESUME
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/resumes/{{generate.response.body.$.id}}/set-default
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DELETE RESUME VERSION
+### ─────────────────────────────────────────────
+
+DELETE {{host}}/api/v1/resumes/{{generate.response.body.$.id}}
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### ATS SCORE FOR A RESUME
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/ats/score
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "resume_id": "{{generate.response.body.$.id}}",
+  "job_description": "We are looking for a senior Rust backend engineer with experience in Axum, SQLx, and PostgreSQL..."
+}
+
+### ─────────────────────────────────────────────
+### LIST ATS REPORTS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/ats/reports
+Authorization: Bearer {{token}}

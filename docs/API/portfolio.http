@@ -1,0 +1,54 @@
+### DevResume AI — Portfolio API Examples
+
+@host = http://localhost:8080
+@token = <paste_access_token_here>
+
+### ─────────────────────────────────────────────
+### GET PORTFOLIO DATA
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/portfolio
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### UPDATE PORTFOLIO SETTINGS
+### ─────────────────────────────────────────────
+
+PUT {{host}}/api/v1/portfolio
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Chamath Dilshan — Rust Engineer",
+  "bio": "Building production-grade systems with Rust, PostgreSQL, and Kubernetes.",
+  "theme": "dark",
+  "show_github_stats": true,
+  "show_commit_heatmap": true,
+  "show_skills": true,
+  "show_timeline": true,
+  "featured_repository_ids": [
+    "550e8400-e29b-41d4-a716-446655440000",
+    "660e9400-f39c-52e5-b827-557766551111"
+  ],
+  "custom_domain": null
+}
+
+### ─────────────────────────────────────────────
+### PUBLISH PORTFOLIO
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/portfolio/publish
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### UNPUBLISH PORTFOLIO
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v1/portfolio/unpublish
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### VIEW PUBLIC PORTFOLIO (No auth required)
+### ─────────────────────────────────────────────
+
+GET {{host}}/p/chamathdi

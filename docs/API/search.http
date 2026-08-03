@@ -1,0 +1,80 @@
+### DevResume AI — Search API Examples
+
+@host = http://localhost:8080
+@token = <paste_access_token_here>
+
+### ─────────────────────────────────────────────
+### FULL-TEXT KEYWORD SEARCH
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/search
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "rust async backend api",
+  "types": ["projects", "repositories", "skills"],
+  "limit": 10,
+  "offset": 0
+}
+
+### ─────────────────────────────────────────────
+### VECTOR (SEMANTIC) SEARCH
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/search/vector
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "distributed systems experience with high availability",
+  "types": ["projects", "resume"],
+  "limit": 5,
+  "similarity_threshold": 0.75
+}
+
+### ─────────────────────────────────────────────
+### HYBRID SEARCH (FTS + Vector + RRF)
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/search/hybrid
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "kubernetes deployment microservices",
+  "types": ["projects", "repositories", "skills", "resume"],
+  "limit": 10,
+  "offset": 0,
+  "rrf_k": 60,
+  "vector_weight": 0.7,
+  "keyword_weight": 0.3
+}
+
+### ─────────────────────────────────────────────
+### SEARCH PROJECTS ONLY
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/search/hybrid
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "machine learning python data pipeline",
+  "types": ["projects"],
+  "limit": 5
+}
+
+### ─────────────────────────────────────────────
+### SEARCH SKILLS
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/search/hybrid
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "cloud infrastructure devops",
+  "types": ["skills"],
+  "limit": 10
+}

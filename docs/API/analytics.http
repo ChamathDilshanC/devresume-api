@@ -1,0 +1,97 @@
+### DevResume AI — Analytics API Examples
+
+@host = http://localhost:8080
+@token = <paste_access_token_here>
+
+### ─────────────────────────────────────────────
+### ANALYTICS OVERVIEW (Dashboard)
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/analytics/overview
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### TECHNOLOGY BREAKDOWN
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v1/analytics/technologies
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### CAREER ANALYTICS (v2)
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/analytics/career
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### CONTRIBUTION ANALYTICS (v2)
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/analytics/contributions?period=last_12_months
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### DEVELOPER RANKING (v2)
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/analytics/ranking
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### CAREER GOALS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/career/goals
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### CREATE CAREER GOAL
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/career/goals
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Become a Senior Rust Engineer",
+  "target_role": "Senior Backend Engineer",
+  "target_salary": 120000,
+  "target_date": "2027-01-01",
+  "current_level": "mid",
+  "notes": "Focus on distributed systems and Rust expertise"
+}
+
+### ─────────────────────────────────────────────
+### CAREER TIMELINE
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/career/timeline
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### AI CAREER INSIGHTS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/career/insights
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### AI RECOMMENDATIONS
+### ─────────────────────────────────────────────
+
+GET {{host}}/api/v2/recommendations
+Authorization: Bearer {{token}}
+
+### ─────────────────────────────────────────────
+### GENERATE NEW RECOMMENDATIONS
+### ─────────────────────────────────────────────
+
+POST {{host}}/api/v2/recommendations/generate
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "focus": "skill_gaps",
+  "target_role": "Staff Engineer"
+}
