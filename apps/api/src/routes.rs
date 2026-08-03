@@ -164,49 +164,55 @@ async fn landing_page() -> impl IntoResponse {
   <div class="stats">
     <div class="stat"><div class="val">v1.0.0</div><div class="lbl">API Version</div></div>
     <div class="stat"><div class="val">17</div><div class="lbl">Rust Crates</div></div>
-    <div class="stat"><div class="val">9</div><div class="lbl">Endpoints Live</div></div>
+    <div class="stat"><div class="val">13</div><div class="lbl">Endpoints Live</div></div>
     <div class="stat"><div class="val">5</div><div class="lbl">AI LLM Fallbacks</div></div>
   </div>
 
-  <div class="sec">Health & Operations</div>
+  <div class="sec">Health &amp; Operations</div>
   <div class="eps">
     <div class="ep">
       <span class="meth get">GET</span>
-      <div><div class="ep-path">/health</div><div class="ep-desc">Service metadata — status, version, architecture</div></div>
+      <div><div class="ep-path"><a href="/health" target="_blank">/health</a></div><div class="ep-desc">Service metadata — status, version, architecture</div></div>
       <span class="badge-200">200 OK</span>
-      <span class="badge-open">Public</span>
+      <span class="badge-open">🌐 Open</span>
     </div>
     <div class="ep">
       <span class="meth get">GET</span>
-      <div><div class="ep-path">/health/live</div><div class="ep-desc">Kubernetes Liveness Probe — container running check</div></div>
+      <div><div class="ep-path"><a href="/health/live" target="_blank">/health/live</a></div><div class="ep-desc">Kubernetes Liveness Probe — container running check</div></div>
       <span class="badge-200">200 OK</span>
-      <span class="badge-open">Public</span>
+      <span class="badge-open">🌐 Open</span>
     </div>
     <div class="ep">
       <span class="meth get">GET</span>
-      <div><div class="ep-path">/health/ready</div><div class="ep-desc">Kubernetes Readiness Probe — database &amp; AI pipeline check</div></div>
+      <div><div class="ep-path"><a href="/health/ready" target="_blank">/health/ready</a></div><div class="ep-desc">Kubernetes Readiness Probe — database &amp; AI pipeline check</div></div>
       <span class="badge-200">200 OK</span>
-      <span class="badge-open">Public</span>
+      <span class="badge-open">🌐 Open</span>
     </div>
     <div class="ep">
       <span class="meth get">GET</span>
-      <div><div class="ep-path">/api/openapi.json</div><div class="ep-desc">OpenAPI 3.0 machine-readable specification schema</div></div>
+      <div><div class="ep-path"><a href="/api/openapi.json" target="_blank">/api/openapi.json</a></div><div class="ep-desc">OpenAPI 3.0 machine-readable specification schema</div></div>
       <span class="badge-200">200 OK</span>
-      <span class="badge-open">Public</span>
+      <span class="badge-open">🌐 Open</span>
     </div>
   </div>
 
-  <div class="sec">Core API Endpoints</div>
+  <div class="sec">API v1 — Core Endpoints</div>
   <div class="eps">
     <div class="ep">
       <span class="meth post">POST</span>
       <div><div class="ep-path">/api/v1/auth/login</div><div class="ep-desc">Authenticate user — returns JWT Bearer token + refresh token</div></div>
       <span class="badge-200">200 OK</span>
-      <span class="badge-open">Public</span>
+      <span class="badge-open">🌐 Open</span>
+    </div>
+    <div class="ep">
+      <span class="meth get">GET</span>
+      <div><div class="ep-path">/api/v1/repositories</div><div class="ep-desc">List synced GitHub repositories for authenticated developer</div></div>
+      <span class="badge-200">200 OK</span>
+      <span class="badge-auth">🔐 Auth Required</span>
     </div>
     <div class="ep">
       <span class="meth post">POST</span>
-      <div><div class="ep-path">/api/v1/resumes/generate</div><div class="ep-desc">Generate ATS-optimized resume in JSON / HTML / PDF / DOCX / Markdown</div></div>
+      <div><div class="ep-path">/api/v1/resumes/generate</div><div class="ep-desc">Generate ATS-optimized resume — JSON / HTML / PDF / DOCX / Markdown</div></div>
       <span class="badge-200">200 OK</span>
       <span class="badge-auth">🔐 Auth Required</span>
     </div>
@@ -218,13 +224,41 @@ async fn landing_page() -> impl IntoResponse {
     </div>
     <div class="ep">
       <span class="meth get">GET</span>
-      <div><div class="ep-path">/api/v1/analytics/overview</div><div class="ep-desc">Developer analytics — heatmap, tech distribution, career timeline</div></div>
+      <div><div class="ep-path">/api/v1/analytics/overview</div><div class="ep-desc">Developer analytics — GitHub heatmap, tech distribution, career timeline</div></div>
+      <span class="badge-200">200 OK</span>
+      <span class="badge-auth">🔐 Auth Required</span>
+    </div>
+  </div>
+
+  <div class="sec">API v2 — Enterprise Endpoints</div>
+  <div class="eps">
+    <div class="ep">
+      <span class="meth post">POST</span>
+      <div><div class="ep-path">/api/v2/search/hybrid</div><div class="ep-desc">Hybrid RRF Search — BM25 keyword + 1536-dim vector cosine similarity fusion</div></div>
+      <span class="badge-200">200 OK</span>
+      <span class="badge-auth">🔐 Auth Required</span>
+    </div>
+    <div class="ep">
+      <span class="meth get">GET</span>
+      <div><div class="ep-path">/api/v2/career/insights</div><div class="ep-desc">AI-powered career trajectory analysis and recommended skill roadmap</div></div>
+      <span class="badge-200">200 OK</span>
+      <span class="badge-auth">🔐 Auth Required</span>
+    </div>
+    <div class="ep">
+      <span class="meth get">GET</span>
+      <div><div class="ep-path">/api/v2/jobs/applications</div><div class="ep-desc">Job application tracker — status, ATS match scores, interview stages</div></div>
       <span class="badge-200">200 OK</span>
       <span class="badge-auth">🔐 Auth Required</span>
     </div>
     <div class="ep">
       <span class="meth post">POST</span>
-      <div><div class="ep-path">/api/v2/search/hybrid</div><div class="ep-desc">Hybrid RRF Search — BM25 keyword + 1536-dim vector cosine similarity fusion</div></div>
+      <div><div class="ep-path">/api/v2/interview/practice</div><div class="ep-desc">AI-generated technical interview practice questions by role and stack</div></div>
+      <span class="badge-200">200 OK</span>
+      <span class="badge-auth">🔐 Auth Required</span>
+    </div>
+    <div class="ep">
+      <span class="meth get">GET</span>
+      <div><div class="ep-path">/api/v2/recommendations</div><div class="ep-desc">Personalized resume and portfolio improvement recommendations engine</div></div>
       <span class="badge-200">200 OK</span>
       <span class="badge-auth">🔐 Auth Required</span>
     </div>
