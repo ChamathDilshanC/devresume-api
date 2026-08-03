@@ -1,5 +1,6 @@
 pub mod agents;
 pub mod embeddings;
+pub mod fallback_provider;
 pub mod prompt_engine;
 pub mod provider;
 pub mod rag;
@@ -9,6 +10,7 @@ pub use embeddings::{
     cosine_similarity, generate_chunk_embedding_vector, BatchEmbeddingJob, ChunkingEngine,
     EmbeddingModel, TextChunk,
 };
+pub use fallback_provider::FallbackAIProvider;
 pub use prompt_engine::{
     build_ats_analysis_prompt, build_project_summary_prompt, build_resume_prompt, ProjectContext,
 };

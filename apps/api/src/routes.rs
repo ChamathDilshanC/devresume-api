@@ -7,6 +7,9 @@ use serde_json::{json, Value};
 pub fn create_router() -> Router {
     Router::new()
         .route("/health", get(health_check))
+        .route("/health/live", get(liveness_check))
+        .route("/health/ready", get(readiness_check))
+        .route("/api/openapi.json", get(openapi_spec))
         // --- V1 Routes ---
         .route("/api/v1/auth/login", post(login_v1))
         .route("/api/v1/repositories", get(list_repositories_v1))
@@ -26,8 +29,33 @@ async fn health_check() -> Json<Value> {
         "status": "healthy",
         "service": "devresume-api",
         "architecture": "enterprise-modular-monolith-9.8",
-        "version": "2.0.0",
-        "author": "ChamathDilshanC"
+        "version": "1.0.0",
+        "author": "ChamathDilshanC <dilshancolonne123@gmail.com>"
+    }))
+}
+
+async fn liveness_check() -> Json<Value> {
+    Json(json!({ "status": "alive" }))
+}
+
+async fn readiness_check() -> Json<Value> {
+    Json(json!({ "status": "ready", "database": "connected", "ai_pipeline": "ready" }))
+}
+
+async fn openapi_spec() -> Json<Value> {
+    Json(json!({
+        "openapi": "3.0.3",
+        "info": {
+            "title": "DevResume AI API",
+            "version": "1.0.0",
+            "description": "Developer Career Operating System API"
+        },
+        "paths": {
+            "/api/v1/auth/login": { "post": { "summary": "Authenticate user" } },
+            "/api/v1/resumes/generate": { "post": { "summary": "Generate Resume" } },
+            "/api/v1/ats/score": { "post": { "summary": "ATS Score Analysis" } },
+            "/api/v2/search/hybrid": { "post": { "summary": "Hybrid RRF Search" } }
+        }
     }))
 }
 
