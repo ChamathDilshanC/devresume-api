@@ -19,6 +19,9 @@ impl EnterpriseStorageClient {
             StorageTier::Artifacts => "artifacts",
             StorageTier::Exports => "exports",
         };
-        format!("http://localhost:9000/{}/{}/{}", self.bucket, prefix, filename)
+        format!(
+            "http://localhost:9000/{}/{}/{}",
+            self.bucket, prefix, filename
+        )
     }
 }

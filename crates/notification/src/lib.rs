@@ -8,6 +8,10 @@ pub struct NotificationPayload {
 }
 
 pub fn send_notification(payload: NotificationPayload) -> bool {
-    tracing::info!("Sending notification to {}: {}", payload.recipient, payload.title);
+    tracing::info!(
+        "Sending notification to {}: {}",
+        payload.recipient,
+        payload.title
+    );
     true
 }

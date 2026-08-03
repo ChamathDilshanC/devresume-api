@@ -17,8 +17,10 @@ impl Config {
         dotenvy::dotenv().ok();
 
         Self {
-            database_url: env::var("DATABASE_URL")
-                .unwrap_or_else(|_| "postgres://devresume_user:devresume_password@localhost:5432/devresume_db".to_string()),
+            database_url: env::var("DATABASE_URL").unwrap_or_else(|_| {
+                "postgres://devresume_user:devresume_password@localhost:5432/devresume_db"
+                    .to_string()
+            }),
             redis_url: env::var("REDIS_URL")
                 .unwrap_or_else(|_| "redis://127.0.0.1:6379".to_string()),
             jwt_secret: env::var("JWT_SECRET")

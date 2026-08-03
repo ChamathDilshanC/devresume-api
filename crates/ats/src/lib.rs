@@ -20,7 +20,11 @@ pub fn analyze_resume_ats(resume_text: &str) -> AtsScoreResult {
 
     AtsScoreResult {
         overall_score: score.min(100),
-        keyword_matches: vec!["Rust".to_string(), "PostgreSQL".to_string(), "API".to_string()],
+        keyword_matches: vec![
+            "Rust".to_string(),
+            "PostgreSQL".to_string(),
+            "API".to_string(),
+        ],
         formatting_score: 95,
         suggestions,
     }

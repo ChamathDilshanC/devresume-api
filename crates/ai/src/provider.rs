@@ -77,7 +77,10 @@ pub struct OllamaProvider {
 #[async_trait]
 impl AIProvider for OllamaProvider {
     async fn generate(&self, prompt: &str) -> Result<String> {
-        Ok(format!("[Ollama Local Response] Processed prompt: {}", prompt))
+        Ok(format!(
+            "[Ollama Local Response] Processed prompt: {}",
+            prompt
+        ))
     }
     async fn embeddings(&self, _text: &str) -> Result<Vec<f32>> {
         Ok(vec![0.05; 1536])

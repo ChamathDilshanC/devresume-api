@@ -7,14 +7,12 @@ use serde_json::{json, Value};
 pub fn create_router() -> Router {
     Router::new()
         .route("/health", get(health_check))
-
         // --- V1 Routes ---
         .route("/api/v1/auth/login", post(login_v1))
         .route("/api/v1/repositories", get(list_repositories_v1))
         .route("/api/v1/resumes/generate", post(generate_resume_v1))
         .route("/api/v1/ats/score", post(ats_score_v1))
         .route("/api/v1/analytics/overview", get(analytics_v1))
-
         // --- V2 Enterprise Routes ---
         .route("/api/v2/search/hybrid", post(hybrid_search_v2))
         .route("/api/v2/career/insights", get(career_insights_v2))

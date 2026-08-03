@@ -5,4 +5,6 @@ pub mod provider;
 pub mod rag;
 pub mod tokenizer;
 
-pub use provider::{AIProvider, ChatMessage, ClaudeProvider, GeminiProvider, OllamaProvider, OpenAIProvider};
+pub use provider::{
+    AIProvider, ChatMessage, ClaudeProvider, GeminiProvider, OllamaProvider, OpenAIProvider,
+};

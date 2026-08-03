@@ -23,7 +23,10 @@ pub struct GithubRepoClient {
 impl GithubRepoClient {
     pub fn new() -> Self {
         Self {
-            client: Client::builder().user_agent("DevResume-AI").build().unwrap(),
+            client: Client::builder()
+                .user_agent("DevResume-AI")
+                .build()
+                .unwrap(),
         }
     }
 

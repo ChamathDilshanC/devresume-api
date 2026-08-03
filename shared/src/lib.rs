@@ -18,5 +18,8 @@ impl Default for Pagination {
 }
 
 pub fn format_slug(input: &str) -> String {
-    input.to_lowercase().replace(' ', "-").replace(['/', '\\', ':'], "")
+    input
+        .to_lowercase()
+        .replace(' ', "-")
+        .replace(['/', '\\', ':'], "")
 }
