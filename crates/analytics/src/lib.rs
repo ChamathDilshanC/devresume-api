@@ -1,18 +1,13 @@
-use serde::{Deserialize, Serialize};
+pub mod activity_score;
+pub mod ai_score;
+pub mod career_insights;
+pub mod contribution_score;
+pub mod developer_ranking;
+pub mod technology_trends;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AnalyticsSummary {
-    pub total_repositories: i32,
-    pub total_commits: i32,
-    pub primary_language: String,
-    pub total_impact_score: f64,
-}
-
-pub fn calculate_developer_metrics(repo_count: i32, commit_count: i32) -> AnalyticsSummary {
-    AnalyticsSummary {
-        total_repositories: repo_count,
-        total_commits: commit_count,
-        primary_language: "Rust".to_string(),
-        total_impact_score: (commit_count as f64) * 1.5,
-    }
-}
+pub use activity_score::compute_activity_score;
+pub use ai_score::compute_ai_code_quality_score;
+pub use career_insights::generate_career_insights;
+pub use contribution_score::compute_contribution_score;
+pub use developer_ranking::calculate_developer_percentile;
+pub use technology_trends::analyze_technology_trends;

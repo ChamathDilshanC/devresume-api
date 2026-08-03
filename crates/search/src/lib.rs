@@ -1,12 +1,7 @@
-use serde::{Deserialize, Serialize};
+pub mod hybrid_search;
+pub mod keyword_search;
+pub mod vector_search;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SearchResult {
-    pub repository_id: String,
-    pub title: String,
-    pub similarity_score: f32,
-}
-
-pub fn format_vector_query(query: &str) -> String {
-    format!("SELECT repository_id, content_chunk FROM repository_embeddings WHERE content_chunk LIKE '%{}%'", query)
-}
+pub use hybrid_search::compute_rrf_score;
+pub use keyword_search::build_fulltext_search_query;
+pub use vector_search::build_vector_cosine_query;

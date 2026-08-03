@@ -1,0 +1,16 @@
+app:
+  name: DevResume AI
+  environment: development
+  port: 8080
+
+database:
+  max_connections: 50
+  idle_timeout_seconds: 300
+
+storage:
+  bucket: devresume-artifacts
+  minio_endpoint: "http://localhost:9000"
+
+ai:
+  default_provider: openai
+  vector_dimensions: 1536

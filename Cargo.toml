@@ -4,6 +4,7 @@ members = [
     "apps/api",
     "apps/worker",
     "apps/cli",
+    "shared",
     "crates/common",
     "crates/auth",
     "crates/github",
@@ -15,11 +16,16 @@ members = [
     "crates/analytics",
     "crates/notification",
     "crates/search",
-    "crates/storage"
+    "crates/storage",
+    "crates/career",
+    "crates/jobs",
+    "crates/interview",
+    "crates/learning",
+    "crates/recommendation"
 ]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 authors = ["ChamathDilshanC <dilshancolonne123@gmail.com>"]
 edition = "2021"
 license = "MIT"
@@ -41,3 +47,4 @@ jsonwebtoken = "9.3"
 bcrypt = "0.15"
 dotenvy = "0.15"
 tower-http = { version = "0.5", features = ["cors", "trace"] }
+async-trait = "0.1"

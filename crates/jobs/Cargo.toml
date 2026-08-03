@@ -1,14 +1,12 @@
 [package]
-name = "ai"
+name = "jobs"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
 
 [dependencies]
 common = { path = "../common" }
-async-trait = "0.1"
-reqwest.workspace = true
+shared = { path = "../../shared" }
 serde.workspace = true
 serde_json.workspace = true
-anyhow.workspace = true
-tracing.workspace = true
+uuid.workspace = true

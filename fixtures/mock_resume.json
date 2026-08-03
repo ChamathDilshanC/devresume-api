@@ -1,0 +1,13 @@
+{
+  "name": "Chamath Dilshan",
+  "email": "dilshancolonne123@gmail.com",
+  "title": "Senior Full Stack Software Engineer",
+  "skills": ["Rust", "PostgreSQL", "Next.js", "Docker", "Kubernetes", "Axum", "SQLx"],
+  "projects": [
+    {
+      "name": "DevResume AI",
+      "description": "AI-Powered Developer Career Operating System",
+      "technologies": ["Rust", "PostgreSQL", "pgvector", "Next.js", "Docker"]
+    }
+  ]
+}

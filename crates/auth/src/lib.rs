@@ -1,39 +1,16 @@
-use chrono::{Duration, Utc};
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
+pub mod api_keys;
+pub mod jwt;
+pub mod oauth;
+pub mod permissions;
+pub mod rbac;
+pub mod refresh_tokens;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Claims {
-    pub sub: String,
-    pub email: String,
-    pub exp: usize,
-}
-
-pub fn create_jwt(user_id: Uuid, email: &str, secret: &str) -> Result<String, jsonwebtoken::errors::Error> {
-    let expiration = Utc::now()
-        .checked_add_signed(Duration::days(7))
-        .expect("valid timestamp")
-        .timestamp() as usize;
-
-    let claims = Claims {
-        sub: user_id.to_string(),
-        email: email.to_string(),
-        exp: expiration,
-    };
-
-    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))
-}
-
-pub fn verify_jwt(token: &str, secret: &str) -> Result<Claims, jsonwebtoken::errors::Error> {
-    let token_data = decode::<Claims>(
-        token,
-        &DecodingKey::from_secret(secret.as_bytes()),
-        &Validation::default(),
-    )?;
-
-    Ok(token_data.claims)
-}
+pub use api_keys::generate_api_key;
+pub use jwt::{create_jwt, verify_jwt, Claims};
+pub use oauth::validate_oauth_provider;
+pub use permissions::check_permission;
+pub use rbac::{has_role, Role};
+pub use refresh_tokens::generate_refresh_token;
 
 pub fn hash_password(password: &str) -> Result<String, bcrypt::BcryptError> {
     bcrypt::hash(password, bcrypt::DEFAULT_COST)

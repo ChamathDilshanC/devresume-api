@@ -1,43 +1,14 @@
-use reqwest::Client;
-use serde::{Deserialize, Serialize};
+pub mod actions;
+pub mod commits;
+pub mod issues;
+pub mod oauth;
+pub mod pull_requests;
+pub mod repositories;
+pub mod webhooks;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct GithubRepo {
-    pub id: i64,
-    pub name: String,
-    pub full_name: String,
-    pub html_url: String,
-    pub description: Option<String>,
-    pub default_branch: String,
-    pub private: bool,
-    pub language: Option<String>,
-    pub stargazers_count: i32,
-    pub forks_count: i32,
-    pub open_issues_count: i32,
-}
-
-pub struct GithubClient {
-    client: Client,
-}
-
-impl GithubClient {
-    pub fn new() -> Self {
-        let client = Client::builder()
-            .user_agent("DevResume-AI")
-            .build()
-            .unwrap();
-        Self { client }
-    }
-
-    pub async fn get_user_repos(&self, access_token: &str) -> anyhow::Result<Vec<GithubRepo>> {
-        let response = self
-            .client
-            .get("https://api.github.com/user/repos")
-            .bearer_auth(access_token)
-            .send()
-            .await?;
-
-        let repos = response.json::<Vec<GithubRepo>>().await?;
-        Ok(repos)
-    }
-}
+pub use actions::detect_github_actions_workflows;
+pub use commits::{calculate_commit_impact, CommitStats};
+pub use oauth::build_github_oauth_url;
+pub use pull_requests::analyze_pr_impact;
+pub use repositories::{GithubRepo, GithubRepoClient};
+pub use webhooks::verify_webhook_signature;
