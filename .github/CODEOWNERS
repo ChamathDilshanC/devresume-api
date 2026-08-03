@@ -1,0 +1,11 @@
+# CODEOWNERS — DevResume API
+# All changes require review from the project owner.
+
+* @ChamathDilshanC
+
+# Critical paths require explicit review
+ARCHITECTURE.md @ChamathDilshanC
+docs/ADR/ @ChamathDilshanC
+migrations/ @ChamathDilshanC
+.github/workflows/ @ChamathDilshanC
+Cargo.toml @ChamathDilshanC
