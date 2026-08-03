@@ -1,0 +1,16 @@
+[package]
+name = "auth"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../common" }
+jsonwebtoken.workspace = true
+bcrypt.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+axum.workspace = true

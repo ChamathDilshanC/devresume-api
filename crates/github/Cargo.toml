@@ -1,0 +1,13 @@
+[package]
+name = "github"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../common" }
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+anyhow.workspace = true

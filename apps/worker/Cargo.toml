@@ -1,0 +1,12 @@
+[package]
+name = "worker"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../../crates/common" }
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+dotenvy.workspace = true

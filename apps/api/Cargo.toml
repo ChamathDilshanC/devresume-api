@@ -1,0 +1,31 @@
+[package]
+name = "api"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../../crates/common" }
+auth = { path = "../../crates/auth" }
+github = { path = "../../crates/github" }
+parser = { path = "../../crates/parser" }
+ai = { path = "../../crates/ai" }
+resume = { path = "../../crates/resume" }
+portfolio = { path = "../../crates/portfolio" }
+ats = { path = "../../crates/ats" }
+analytics = { path = "../../crates/analytics" }
+notification = { path = "../../crates/notification" }
+search = { path = "../../crates/search" }
+storage = { path = "../../crates/storage" }
+
+tokio.workspace = true
+axum.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tower-http.workspace = true
+dotenvy.workspace = true

@@ -1,0 +1,11 @@
+[package]
+name = "search"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../common" }
+sqlx.workspace = true
+serde.workspace = true
+serde_json.workspace = true
