@@ -14,5 +14,8 @@ fn main() {
     let start = std::time::Instant::now();
     benchmark_cosine_similarity();
     let duration = start.elapsed();
-    println!("Executed 10,000 1536-dimensional Cosine Similarity vector computations in {:?}", duration);
+    println!(
+        "Executed 10,000 1536-dimensional Cosine Similarity vector computations in {:?}",
+        duration
+    );
 }
