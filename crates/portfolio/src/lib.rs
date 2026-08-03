@@ -1,18 +1,11 @@
-use serde::{Deserialize, Serialize};
+pub mod builder;
+pub mod deploy;
+pub mod renderer;
+pub mod seo;
+pub mod theme;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct PortfolioConfig {
-    pub title: String,
-    pub bio: String,
-    pub theme: String,
-    pub featured_projects: Vec<String>,
-}
-
-pub fn generate_default_portfolio(user_name: &str) -> PortfolioConfig {
-    PortfolioConfig {
-        title: format!("{}'s Engineering Portfolio", user_name),
-        bio: "Building high-performance software applications and distributed systems.".to_string(),
-        theme: "dark".to_string(),
-        featured_projects: vec![],
-    }
-}
+pub use builder::{build_portfolio_from_resume, PortfolioSite};
+pub use deploy::{Deployer, DeploymentResult, DeploymentTarget};
+pub use renderer::render_portfolio_html;
+pub use seo::SeoMetadata;
+pub use theme::PortfolioTheme;
