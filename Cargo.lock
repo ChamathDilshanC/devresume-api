@@ -71,6 +71,7 @@ version = "0.1.0"
 dependencies = [
  "ai",
  "analytics",
+ "anyhow",
  "ats",
  "auth",
  "axum",
@@ -347,6 +348,7 @@ name = "common"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "axum",
  "chrono",
  "dotenvy",
  "serde",
@@ -1269,6 +1271,7 @@ dependencies = [
  "common",
  "serde",
  "serde_json",
+ "tracing",
 ]
 
 [[package]]
@@ -3063,6 +3066,7 @@ checksum = "1ebf944e87a7c253233ad6766e082e3cd714b5d03812acc24c318f549614536e"
 name = "worker"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "common",
  "dotenvy",
  "tokio",
