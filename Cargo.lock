@@ -82,6 +82,7 @@ dependencies = [
  "common",
  "dotenvy",
  "github",
+ "jobs",
  "notification",
  "parser",
  "portfolio",

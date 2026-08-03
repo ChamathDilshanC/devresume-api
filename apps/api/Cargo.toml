@@ -17,6 +17,8 @@ analytics = { path = "../../crates/analytics" }
 notification = { path = "../../crates/notification" }
 search = { path = "../../crates/search" }
 storage = { path = "../../crates/storage" }
+jobs = { path = "../../crates/jobs" }
+
 
 tokio.workspace = true
 axum.workspace = true
