@@ -15,6 +15,8 @@ pub use oauth::{
     GoogleOAuthClient, GoogleUserProfile, OAuthCallbackQuery, OAuthSessionResult, OAuthState,
 };
 pub use passwords::{hash_password, verify_password};
-pub use permissions::check_permission;
+pub use permissions::{
+    check_permission, get_permissions_for_role, role_has_permission, Permission,
+};
 pub use rbac::{has_role, Role};
 pub use refresh_tokens::generate_refresh_token;
