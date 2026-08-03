@@ -1,30 +1,11 @@
-use serde::{Deserialize, Serialize};
+pub mod architecture;
+pub mod detector;
+pub mod manifest;
 
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct DetectedTechnologies {
-    pub languages: Vec<String>,
-    pub frameworks: Vec<String>,
-    pub databases: Vec<String>,
-    pub devops: Vec<String>,
-}
-
-pub fn detect_technologies_from_filenames(filenames: &[&str]) -> DetectedTechnologies {
-    let mut detected = DetectedTechnologies::default();
-
-    for file in filenames {
-        if file.contains("Cargo.toml") {
-            detected.languages.push("Rust".to_string());
-        }
-        if file.contains("package.json") {
-            detected.languages.push("JavaScript/TypeScript".to_string());
-        }
-        if file.contains("Dockerfile") || file.contains("docker-compose") {
-            detected.devops.push("Docker".to_string());
-        }
-        if file.contains("requirements.txt") || file.contains("Pyproject.toml") {
-            detected.languages.push("Python".to_string());
-        }
-    }
-
-    detected
-}
+pub use architecture::{detect_architecture_pattern, ArchitecturePattern};
+pub use detector::{detect_technologies_from_files, TechnologyProfile};
+pub use manifest::{
+    parse_cargo_toml, parse_docker_compose, parse_dockerfile, parse_package_json, parse_readme,
+    parse_requirements_txt, CargoTomlAnalysis, DockerComposeAnalysis, DockerfileAnalysis,
+    PackageJsonAnalysis, ReadmeAnalysis, RequirementsTxtAnalysis,
+};
