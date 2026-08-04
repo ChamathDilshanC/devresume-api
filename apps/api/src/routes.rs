@@ -37,6 +37,12 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v2/jobs/applications", get(job_applications_v2))
         .route("/api/v2/interview/practice", post(interview_practice_v2))
         .route("/api/v2/recommendations", get(recommendations_v2))
+        .layer(
+            tower_http::cors::CorsLayer::new()
+                .allow_origin(tower_http::cors::Any)
+                .allow_methods(tower_http::cors::Any)
+                .allow_headers(tower_http::cors::Any),
+        )
         .with_state(state)
 }
 
