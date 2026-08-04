@@ -53,15 +53,26 @@ pub async fn register(
         .bind(&payload.email)
         .fetch_optional(&state.db)
         .await
-        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "DB error"}))))?;
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error": "DB error"})),
+            )
+        })?;
 
     if existing_user.is_some() {
-        return Err((StatusCode::CONFLICT, Json(json!({"error": "Email already registered"}))));
+        return Err((
+            StatusCode::CONFLICT,
+            Json(json!({"error": "Email already registered"})),
+        ));
     }
 
     let password_hash = if let Some(pw) = &payload.password {
         Some(hash_password(pw).map_err(|_| {
-            (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({"error": "Hash error"})))
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(json!({"error": "Hash error"})),
+            )
         })?)
     } else {
         None
@@ -119,13 +130,22 @@ pub async fn login(
     if let Some(pw) = &payload.password {
         if let Some(hash) = &user.password_hash {
             if !verify_password(pw, hash).unwrap_or(false) {
-                return Err((StatusCode::UNAUTHORIZED, Json(json!({"error": "Invalid credentials"}))));
+                return Err((
+                    StatusCode::UNAUTHORIZED,
+                    Json(json!({"error": "Invalid credentials"})),
+                ));
             }
         } else {
-            return Err((StatusCode::UNAUTHORIZED, Json(json!({"error": "Invalid credentials"}))));
+            return Err((
+                StatusCode::UNAUTHORIZED,
+                Json(json!({"error": "Invalid credentials"})),
+            ));
         }
     } else {
-        return Err((StatusCode::BAD_REQUEST, Json(json!({"error": "Password required"}))));
+        return Err((
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": "Password required"})),
+        ));
     }
 
     let access_token = create_jwt(user.id, &user.email, &state.config.jwt_secret).unwrap();
@@ -187,12 +207,21 @@ pub async fn google_callback(
     );
 
     let token_resp = client.exchange_code(&query.code).await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(json!({"error": format!("Token exchange failed: {}", e)})))
+        (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": format!("Token exchange failed: {}", e)})),
+        )
     })?;
 
-    let profile = client.get_user_profile(&token_resp.access_token).await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(json!({"error": format!("Profile fetch failed: {}", e)})))
-    })?;
+    let profile = client
+        .get_user_profile(&token_resp.access_token)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error": format!("Profile fetch failed: {}", e)})),
+            )
+        })?;
 
     let existing_user = sqlx::query_as::<_, User>(
         r#"SELECT id, email, password_hash, name, avatar_url, role, bio, github_username, github_id, created_at, updated_at FROM users WHERE email = $1"#)
@@ -258,14 +287,25 @@ pub async fn github_callback(
     );
 
     let token_resp = client.exchange_code(&query.code).await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(json!({"error": format!("Token exchange failed: {}", e)})))
+        (
+            StatusCode::BAD_REQUEST,
+            Json(json!({"error": format!("Token exchange failed: {}", e)})),
+        )
     })?;
 
-    let profile = client.get_user_profile(&token_resp.access_token).await.map_err(|e| {
-        (StatusCode::BAD_REQUEST, Json(json!({"error": format!("Profile fetch failed: {}", e)})))
-    })?;
+    let profile = client
+        .get_user_profile(&token_resp.access_token)
+        .await
+        .map_err(|e| {
+            (
+                StatusCode::BAD_REQUEST,
+                Json(json!({"error": format!("Profile fetch failed: {}", e)})),
+            )
+        })?;
 
-    let email = profile.email.unwrap_or_else(|| format!("{}@github.local", profile.login));
+    let email = profile
+        .email
+        .unwrap_or_else(|| format!("{}@github.local", profile.login));
 
     let existing_user = sqlx::query_as::<_, User>(
         r#"SELECT id, email, password_hash, name, avatar_url, role, bio, github_username, github_id, created_at, updated_at FROM users WHERE email = $1"#)

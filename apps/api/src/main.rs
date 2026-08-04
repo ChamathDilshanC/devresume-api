@@ -1,9 +1,9 @@
+mod handlers;
 mod routes;
 mod state;
-mod handlers;
 
-use common::Config;
 use common::db;
+use common::Config;
 use state::AppState;
 use std::net::SocketAddr;
 use tracing::info;
@@ -19,7 +19,7 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let config = Config::from_env();
-    
+
     // Connect to Database
     let pool = db::create_pool(&config.database_url).await?;
 
