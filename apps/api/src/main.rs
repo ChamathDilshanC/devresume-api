@@ -23,6 +23,16 @@ async fn main() -> anyhow::Result<()> {
     // Connect to Database
     let pool = db::create_pool(&config.database_url).await?;
 
+    info!("Running database migrations...");
+    sqlx::migrate!("../../migrations")
+        .run(&pool)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to run migrations: {}", e);
+            e
+        })?;
+    info!("Database migrations applied successfully.");
+
     let state = AppState {
         db: pool,
         config: config.clone(),
