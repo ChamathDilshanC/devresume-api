@@ -9,9 +9,12 @@ pub struct Config {
     pub environment: String,
     pub github_client_id: String,
     pub github_client_secret: String,
+    pub github_callback_url: String,
     pub google_client_id: String,
     pub google_client_secret: String,
+    pub google_redirect_uri: String,
     pub openai_api_key: String,
+    pub web_url: String,
 }
 
 impl Config {
@@ -34,9 +37,14 @@ impl Config {
             environment: env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string()),
             github_client_id: env::var("GITHUB_CLIENT_ID").unwrap_or_default(),
             github_client_secret: env::var("GITHUB_CLIENT_SECRET").unwrap_or_default(),
+            github_callback_url: env::var("GITHUB_CALLBACK_URL")
+                .unwrap_or_else(|_| "http://localhost:8080/api/v1/auth/github/callback".to_string()),
             google_client_id: env::var("GOOGLE_CLIENT_ID").unwrap_or_default(),
             google_client_secret: env::var("GOOGLE_CLIENT_SECRET").unwrap_or_default(),
+            google_redirect_uri: env::var("GOOGLE_REDIRECT_URI")
+                .unwrap_or_else(|_| "http://localhost:8080/api/v1/auth/google/callback".to_string()),
             openai_api_key: env::var("OPENAI_API_KEY").unwrap_or_default(),
+            web_url: env::var("WEB_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()),
         }
     }
 }

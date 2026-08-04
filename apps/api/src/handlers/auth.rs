@@ -170,7 +170,7 @@ pub async fn google_login(State(state): State<AppState>) -> Redirect {
     let client = GoogleOAuthClient::new(
         state.config.google_client_id.clone(),
         state.config.google_client_secret.clone(),
-        "http://localhost:8080/api/v1/auth/google/callback".to_string(),
+        state.config.google_redirect_uri.clone(),
     );
     let url = client.get_authorization_url("random_state_123");
     Redirect::temporary(&url)
@@ -183,7 +183,7 @@ pub async fn google_callback(
     let client = GoogleOAuthClient::new(
         state.config.google_client_id.clone(),
         state.config.google_client_secret.clone(),
-        "http://localhost:8080/api/v1/auth/google/callback".to_string(),
+        state.config.google_redirect_uri.clone(),
     );
 
     let token_resp = client.exchange_code(&query.code).await.map_err(|e| {
@@ -231,8 +231,8 @@ pub async fn google_callback(
     let refresh_token = generate_refresh_token();
 
     let redirect_url = format!(
-        "http://localhost:3000/auth/callback?access_token={}&refresh_token={}",
-        access_token, refresh_token
+        "{}/auth/callback?access_token={}&refresh_token={}",
+        state.config.web_url, access_token, refresh_token
     );
     Ok(Redirect::temporary(&redirect_url))
 }
@@ -241,7 +241,7 @@ pub async fn github_login(State(state): State<AppState>) -> Redirect {
     let client = GitHubOAuthClient::new(
         state.config.github_client_id.clone(),
         state.config.github_client_secret.clone(),
-        "http://localhost:8080/api/v1/auth/github/callback".to_string(),
+        state.config.github_callback_url.clone(),
     );
     let url = client.get_authorization_url("random_state_456");
     Redirect::temporary(&url)
@@ -254,7 +254,7 @@ pub async fn github_callback(
     let client = GitHubOAuthClient::new(
         state.config.github_client_id.clone(),
         state.config.github_client_secret.clone(),
-        "http://localhost:8080/api/v1/auth/github/callback".to_string(),
+        state.config.github_callback_url.clone(),
     );
 
     let token_resp = client.exchange_code(&query.code).await.map_err(|e| {
@@ -308,8 +308,8 @@ pub async fn github_callback(
     let refresh_token = generate_refresh_token();
 
     let redirect_url = format!(
-        "http://localhost:3000/auth/callback?access_token={}&refresh_token={}",
-        access_token, refresh_token
+        "{}/auth/callback?access_token={}&refresh_token={}",
+        state.config.web_url, access_token, refresh_token
     );
     Ok(Redirect::temporary(&redirect_url))
 }
