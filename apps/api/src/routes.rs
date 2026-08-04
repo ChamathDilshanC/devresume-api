@@ -6,8 +6,10 @@ use axum::{
 };
 
 use serde_json::{json, Value};
+use crate::state::AppState;
+use crate::handlers::auth;
 
-pub fn create_router() -> Router {
+pub fn create_router(state: AppState) -> Router {
     Router::new()
         // Root Landing Page
         .route("/", get(landing_page))
@@ -16,7 +18,15 @@ pub fn create_router() -> Router {
         .route("/health/ready", get(readiness_check))
         .route("/api/openapi.json", get(openapi_spec))
         // --- V1 Routes ---
-        .route("/api/v1/auth/login", post(login_v1))
+        .route("/api/v1/auth/register", post(auth::register))
+        .route("/api/v1/auth/login", post(auth::login))
+        .route("/api/v1/auth/google", get(auth::google_login))
+        .route("/api/v1/auth/google/callback", get(auth::google_callback))
+        .route("/api/v1/auth/github", get(auth::github_login))
+        .route("/api/v1/auth/github/callback", get(auth::github_callback))
+        .route("/api/v1/auth/logout", post(auth::logout))
+        .route("/api/v1/auth/me", get(auth::me))
+        .route("/api/v1/auth/refresh", post(auth::refresh))
         .route("/api/v1/repositories", get(list_repositories_v1))
         .route("/api/v1/resumes/generate", post(generate_resume_v1))
         .route("/api/v1/ats/score", post(ats_score_v1))
@@ -27,6 +37,7 @@ pub fn create_router() -> Router {
         .route("/api/v2/jobs/applications", get(job_applications_v2))
         .route("/api/v2/interview/practice", post(interview_practice_v2))
         .route("/api/v2/recommendations", get(recommendations_v2))
+        .with_state(state)
 }
 
 async fn landing_page() -> impl IntoResponse {
@@ -361,19 +372,19 @@ async fn openapi_spec() -> Json<Value> {
             "description": "Developer Career Operating System API"
         },
         "paths": {
+            "/api/v1/auth/register": { "post": { "summary": "Register a new user" } },
             "/api/v1/auth/login": { "post": { "summary": "Authenticate user" } },
+            "/api/v1/auth/google": { "get": { "summary": "Initiate Google OAuth" } },
+            "/api/v1/auth/google/callback": { "get": { "summary": "Google OAuth callback" } },
+            "/api/v1/auth/github": { "get": { "summary": "Initiate GitHub OAuth" } },
+            "/api/v1/auth/github/callback": { "get": { "summary": "GitHub OAuth callback" } },
+            "/api/v1/auth/logout": { "post": { "summary": "Logout user" } },
+            "/api/v1/auth/me": { "get": { "summary": "Get current user profile" } },
+            "/api/v1/auth/refresh": { "post": { "summary": "Refresh access token" } },
             "/api/v1/resumes/generate": { "post": { "summary": "Generate Resume" } },
             "/api/v1/ats/score": { "post": { "summary": "ATS Score Analysis" } },
             "/api/v2/search/hybrid": { "post": { "summary": "Hybrid RRF Search" } }
         }
-    }))
-}
-
-async fn login_v1() -> Json<Value> {
-    Json(json!({
-        "version": "v1",
-        "status": "success",
-        "token_type": "Bearer"
     }))
 }
 

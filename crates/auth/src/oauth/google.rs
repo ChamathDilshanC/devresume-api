@@ -32,6 +32,65 @@ impl GoogleOAuthClient {
             urlencoding::encode(state)
         )
     }
+
+    pub async fn exchange_code(&self, code: &str) -> Result<GoogleTokenResponse, String> {
+        let client = reqwest::Client::new();
+        let params = [
+            ("client_id", self.client_id.as_str()),
+            ("client_secret", self.client_secret.as_str()),
+            ("code", code),
+            ("grant_type", "authorization_code"),
+            ("redirect_uri", self.redirect_uri.as_str()),
+        ];
+
+        let response = client
+            .post("https://oauth2.googleapis.com/token")
+            .form(&params)
+            .send()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        if !response.status().is_success() {
+            let text = response.text().await.unwrap_or_default();
+            return Err(text);
+        }
+
+        let token_resp = response
+            .json::<GoogleTokenResponse>()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(token_resp)
+    }
+
+    pub async fn get_user_profile(&self, access_token: &str) -> Result<GoogleUserProfile, String> {
+        let client = reqwest::Client::new();
+        let response = client
+            .get("https://www.googleapis.com/oauth2/v2/userinfo")
+            .bearer_auth(access_token)
+            .send()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        if !response.status().is_success() {
+            let text = response.text().await.unwrap_or_default();
+            return Err(text);
+        }
+
+        let profile = response
+            .json::<GoogleUserProfile>()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        Ok(profile)
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct GoogleTokenResponse {
+    pub access_token: String,
+    pub token_type: String,
+    pub expires_in: i64,
 }
 
 #[cfg(test)]

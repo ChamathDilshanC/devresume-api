@@ -9,6 +9,8 @@ pub struct Config {
     pub environment: String,
     pub github_client_id: String,
     pub github_client_secret: String,
+    pub google_client_id: String,
+    pub google_client_secret: String,
     pub openai_api_key: String,
 }
 
@@ -32,6 +34,8 @@ impl Config {
             environment: env::var("ENVIRONMENT").unwrap_or_else(|_| "development".to_string()),
             github_client_id: env::var("GITHUB_CLIENT_ID").unwrap_or_default(),
             github_client_secret: env::var("GITHUB_CLIENT_SECRET").unwrap_or_default(),
+            google_client_id: env::var("GOOGLE_CLIENT_ID").unwrap_or_default(),
+            google_client_secret: env::var("GOOGLE_CLIENT_SECRET").unwrap_or_default(),
             openai_api_key: env::var("OPENAI_API_KEY").unwrap_or_default(),
         }
     }

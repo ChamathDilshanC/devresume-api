@@ -1,6 +1,10 @@
 mod routes;
+mod state;
+mod handlers;
 
 use common::Config;
+use common::db;
+use state::AppState;
 use std::net::SocketAddr;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -15,8 +19,16 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let config = Config::from_env();
+    
+    // Connect to Database
+    let pool = db::create_pool(&config.database_url).await?;
 
-    let app = routes::create_router();
+    let state = AppState {
+        db: pool,
+        config: config.clone(),
+    };
+
+    let app = routes::create_router(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], config.port));
     info!("🚀 DevResume AI Axum Backend listening on http://{}", addr);
