@@ -175,7 +175,7 @@ async fn landing_page() -> impl IntoResponse {
     <div class="live-pill"><span></span>All Systems Operational</div>
     <h1>DevResume AI API</h1>
     <p class="tagline">Enterprise Rust Axum Backend — Developer Career Operating System powered by Multi-LLM Orchestration, pgvector Hybrid Search, and AI-driven Analytics.</p>
-    <div class="base-url">https://devresume-api.onrender.com</div>
+    <div class="base-url">https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io</div>
   </header>
 
   <div class="stats">
@@ -303,7 +303,7 @@ async fn landing_page() -> impl IntoResponse {
     </ul></div>
     <div class="ac"><div class="ac-title">Production</div><ul>
       <li>GitHub Actions CI Pipeline</li>
-      <li>Render Cloud Auto-Deploy</li>
+      <li>Azure Container Apps Auto-Deploy</li>
       <li>K8s Liveness / Readiness Probes</li>
       <li>Zero Warning Clippy Policy</li>
     </ul></div>
@@ -313,16 +313,16 @@ async fn landing_page() -> impl IntoResponse {
   <div class="qs">
     <p style="font-size:13px;color:var(--dim)">Test the live API directly from your terminal:</p>
     <pre><span class="c"># Health Check</span>
-curl https://devresume-api.onrender.com/health
+curl https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/health
 
 <span class="c"># Readiness Probe</span>
-curl https://devresume-api.onrender.com/health/ready
+curl https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/health/ready
 
 <span class="c"># OpenAPI Specification</span>
-curl https://devresume-api.onrender.com/api/openapi.json | <span class="g">jq .</span>
+curl https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/api/openapi.json | <span class="g">jq .</span>
 
 <span class="c"># Generate Resume (requires JWT token)</span>
-curl -X POST https://devresume-api.onrender.com/api/v1/resumes/generate \
+curl -X POST https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/api/v1/resumes/generate \
   -H <span class="p">"Authorization: Bearer &lt;your_token&gt;"</span> \
   -H "Content-Type: application/json" \
   -d <span class="p">'{"github_username":"ChamathDilshanC","format":"html"}'</span></pre>

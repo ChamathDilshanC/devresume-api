@@ -16,9 +16,11 @@ RUN apt-get update && apt-get install -y ca-certificates libssl3 && rm -rf /var/
 
 COPY --from=builder /app/target/release/api /app/devresume-api
 
-# Hugging Face Spaces (Docker SDK) requires the container to listen on 7860.
-ENV PORT=7860
+# Azure Container Apps (and most PaaS hosts) route to a fixed target port.
+# The app reads PORT from the environment (see crates/common/src/config.rs),
+# so this can be overridden at deploy time with `--env-vars PORT=<port>` if needed.
+ENV PORT=8080
 
-EXPOSE 7860
+EXPOSE 8080
 
 CMD ["/app/devresume-api"]
