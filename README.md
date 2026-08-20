@@ -2,7 +2,7 @@
 
 > High-Performance Micro-Crate Rust Backend Engine powering **DevResume AI**.
 
-**Live:** `https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io` — deployed on Azure Container Apps + Azure Database for PostgreSQL. See [AZURE_DEPLOYMENT.md](AZURE_DEPLOYMENT.md) for the deployment architecture, provisioning script, and CI/CD workflow.
+**Live:** `https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io` — deployed on Azure Container Apps, database on Supabase Postgres. See [AZURE_DEPLOYMENT.md](AZURE_DEPLOYMENT.md) for the deployment architecture, provisioning script, and CI/CD workflow.
 
 ---
 

@@ -1,10 +1,10 @@
-# Deploying devresume-api to Azure (Free Tier)
+# Deploying devresume-api to Azure (Free Tier) + Supabase
 
-**Status: deployed and live** at `https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/health` (resource group `devresume-rg`, subscription "Azure for Students"). Everything below reflects what actually got provisioned, including two gotchas this specific subscription hit that a fresh subscription might not.
+**Status: deployed and live** at `https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/health` (resource group `devresume-rg`, subscription "Azure for Students"). Everything below reflects what actually got provisioned, including gotchas this specific subscription hit that a fresh subscription might not.
 
 Architecture:
 
-- **Database:** Azure Database for PostgreSQL — Flexible Server, Burstable `Standard_B1ms`, 32GB, region `centralindia` (the SKU covered by Azure's 12-months-free allowance)
+- **Database:** Supabase Postgres (`pgvector` pre-installed), accessed via the Supavisor **transaction pooler** (`aws-0-<region>.pooler.supabase.com:6543`) — not the direct `db.<ref>.supabase.co` host, which is IPv6-only and unreachable from Container Apps' IPv4-only outbound networking. Originally this ran on Azure Database for PostgreSQL Flexible Server; moved to Supabase on 2026-08-20 to cut cost, since Azure Postgres wasn't fully covered by the "Azure for Students" free allowance in practice.
 - **Backend:** Azure Container Apps (Consumption plan — has a permanent "always free" monthly grant of 180,000 vCPU-seconds / 360,000 GiB-seconds / 2M requests, separate from the 12-month trial), deployed into the pre-existing `nexuscart-env` environment in `NexusCart-RG` (see Section 2 — this subscription caps at **one** Container Apps environment total)
 - **Registry:** GitHub Container Registry (ghcr.io), package set to public — free, avoids Azure Container Registry's ~$5/mo Basic tier
 
@@ -14,27 +14,41 @@ The app already reads `PORT` from the environment and falls back to `8080` ([cra
 
 No other Dockerfile changes were needed: `sqlx::migrate!` embeds migrations into the binary at compile time (they don't need to be copied into the runtime stage), and `configs/app.yaml` isn't read by the app at all (dead file — nothing depends on it at runtime).
 
-`sqlx` is already built with `runtime-tokio-native-tls`, so TLS connections work out of the box — you just need `?sslmode=require` in `DATABASE_URL`, which Azure Postgres Flexible Server enforces by default anyway.
+`sqlx` is already built with `runtime-tokio-native-tls`, so TLS connections work out of the box — you just need `?sslmode=require` in `DATABASE_URL`.
 
-## 2. One-time provisioning
+## 2. Database: Supabase setup
 
-Run [scripts/azure-deploy.ps1](scripts/azure-deploy.ps1) from this directory. It creates the resource group, Postgres Flexible Server + database, allow-lists the Postgres extensions the migrations need, builds/pushes the image to GHCR, and creates the Container App with `DATABASE_URL`/`JWT_SECRET` wired up as secrets. Read the script's header comments for prerequisites (`az login`, the `containerapp` extension, Docker Desktop running).
+1. [supabase.com/dashboard](https://supabase.com/dashboard) → New project. Note the region you pick — it's baked into the pooler hostname and can't be changed later without creating a new project.
+2. **Settings → Database → Connection string → "Transaction pooler" tab.** Use this one, not "Direct connection" (IPv6-only, see architecture note above). Format: `postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres`.
+3. If the password has special characters, URL-encode them (`@` → `%40`, etc.) — otherwise they get parsed as part of the URL structure instead of the password. sqlx/Postgres error on a bad encoding as generic auth failure, not a parse error, so this is easy to misdiagnose.
+4. Append `?sslmode=require`.
+5. Set it as the Container App's `database-url` secret (see Section 4) and restart the revision — `sqlx::migrate!` runs automatically on startup and creates everything (`uuid-ossp` came pre-enabled on this project; `vector`/pgvector installed cleanly with no allow-listing step needed, unlike Azure Postgres — see the historical gotcha below).
 
-It prints a generated Postgres admin password and JWT secret — **save them somewhere durable** (a password manager), they aren't stored anywhere else.
+### Historical: provisioning devresume-pg-1977 on Azure Postgres (deleted 2026-08-20)
+
+[scripts/azure-deploy.ps1](scripts/azure-deploy.ps1) still contains the original Azure Postgres Flexible Server provisioning steps for reference, but they're no longer part of the live setup — running that section again would recreate a paid resource that was deliberately torn down. What it did, and the gotchas hit, in case Azure Postgres is ever reintroduced:
+
+- **Postgres extension allow-listing.** Azure Postgres Flexible Server refuses `CREATE EXTENSION` for anything not explicitly allow-listed first, even extensions bundled with the image (`uuid-ossp`, `vector`). Needs `az postgres flexible-server parameter set --name azure.extensions --value "uuid-ossp,vector"` run *before* the app's first migration attempt, or startup fails with `extension "uuid-ossp" is not allow-listed for users in Azure Database for PostgreSQL`. Supabase has no equivalent restriction.
+- **Resource provider registration.** A fresh subscription isn't registered for `Microsoft.DBforPostgreSQL` by default; `az postgres flexible-server create` fails with `MissingSubscriptionRegistration` until `az provider register --namespace Microsoft.DBforPostgreSQL` completes (a minute or two).
+
+## 3. Backend: one-time provisioning on Azure
+
+Run [scripts/azure-deploy.ps1](scripts/azure-deploy.ps1) from this directory (Postgres section now superseded by Section 2 above — the script still creates the resource group and Container App, wired to whatever `DATABASE_URL` you set). Read the script's header comments for prerequisites (`az login`, the `containerapp` extension, Docker Desktop running).
+
+It prints a generated JWT secret — **save it somewhere durable** (a password manager), it isn't stored anywhere else.
 
 ### Gotchas hit on this subscription (worth checking on any subscription before assuming defaults work)
 
-- **Region policy.** This subscription has a system Azure Policy capping deployments to five regions: `austriaeast`, `indonesiacentral`, `eastasia`, `koreacentral`, `centralindia` (check via `az policy assignment list -o json`). `eastus`/`eastus2` — the usual tutorial defaults — are blocked outright. Postgres was placed in `centralindia`.
-- **Resource provider registration.** A fresh subscription isn't registered for `Microsoft.DBforPostgreSQL` or `Microsoft.App` by default; `az postgres flexible-server create` fails with `MissingSubscriptionRegistration` until you run `az provider register --namespace <ns>` and wait for `registrationState` to reach `Registered` (a minute or two).
+- **Region policy.** This subscription has a system Azure Policy capping deployments to five regions: `austriaeast`, `indonesiacentral`, `eastasia`, `koreacentral`, `centralindia` (check via `az policy assignment list -o json`). `eastus`/`eastus2` — the usual tutorial defaults — are blocked outright.
+- **Resource provider registration.** A fresh subscription isn't registered for `Microsoft.App` by default; `az containerapp create` fails with `MissingSubscriptionRegistration` until `az provider register --namespace Microsoft.App` completes.
 - **One Container Apps environment per subscription.** Not per-region — the whole subscription. This one already had `nexuscart-env` (a separate, pre-existing project, `NexusCart-RG`) from before this deployment, so devresume-api was deployed as a second, independent app inside that same environment via `--environment <full-resource-id>` rather than creating a new one. Apps in a shared environment run and scale independently; the only real coupling is that deleting the environment or its resource group takes every app in it down too.
-- **Postgres extension allow-listing.** Azure Postgres Flexible Server refuses `CREATE EXTENSION` for anything not explicitly allow-listed first, even extensions bundled with the image (`uuid-ossp`, `vector`/pgvector, both used by this repo's migrations). Without `az postgres flexible-server parameter set --name azure.extensions --value "uuid-ossp,vector"` run *before* the app's first migration attempt, startup fails with `extension "uuid-ossp" is not allow-listed for users in Azure Database for PostgreSQL`. The script now does this automatically.
 
-## 3. Ongoing deploys via GitHub Actions
+## 4. Ongoing deploys via GitHub Actions
 
 [.github/workflows/azure-deploy.yml](.github/workflows/azure-deploy.yml) builds a new image and calls `az containerapp update --image ...` on every push to `main`. It uses OIDC (`azure/login`) instead of a stored client secret, which requires one-time setup:
 
 ```powershell
-# Run once, after step 2 above (resource group must already exist)
+# Run once, after step 3 above (resource group must already exist)
 $SubscriptionId = az account show --query id -o tsv
 $App = az ad app create --display-name "devresume-api-github-deploy" | ConvertFrom-Json
 az ad sp create --id $App.appId
@@ -62,9 +76,9 @@ Add the three printed values as **GitHub repo secrets** (Settings → Secrets an
 
 The workflow pushes to `ghcr.io/<owner>/devresume-api` using the built-in `GITHUB_TOKEN` (free, no PAT needed to *push*). For Container Apps to *pull* it later, either make the package public once (simplest — the image has no secrets baked in, they're all runtime env vars) or register pull credentials as shown commented-out in `azure-deploy.ps1`.
 
-## 4. Secrets in Azure Container Apps
+## 5. Secrets in Azure Container Apps
 
-Never pass secrets as plain `--env-vars` — always create them as ACA secrets first, then reference with `secretref:<name>`. This is what `azure-deploy.ps1` does for `DATABASE_URL`/`JWT_SECRET`; to add more (GitHub/Google OAuth, AI provider keys from `.env.example`):
+Never pass secrets as plain `--env-vars` — always create them as ACA secrets first, then reference with `secretref:<name>`. `DATABASE_URL`/`JWT_SECRET` are set up this way already; to add more (GitHub/Google OAuth, AI provider keys from `.env.example`):
 
 ```powershell
 az containerapp secret set `
@@ -79,7 +93,13 @@ az containerapp update `
     "OPENAI_API_KEY=secretref:openai-api-key"
 ```
 
-To rotate a secret, run `az containerapp secret set` again with the new value, then `az containerapp revision restart` (or push a new revision) to pick it up — secrets aren't hot-reloaded into a running container.
+To rotate a secret (including `database-url`), run `az containerapp secret set` again with the new value, then restart the active revision to pick it up — secrets aren't hot-reloaded into a running container:
+
+```powershell
+az containerapp secret set --name devresume-api --resource-group devresume-rg --secrets "database-url=<new-url>"
+$Revision = az containerapp revision list --name devresume-api --resource-group devresume-rg --query "[0].name" -o tsv
+az containerapp revision restart --name devresume-api --resource-group devresume-rg --revision $Revision
+```
 
 To inspect what's currently set (values are redacted, names only):
 
@@ -88,7 +108,7 @@ az containerapp secret list --name devresume-api --resource-group devresume-rg -
 az containerapp show --name devresume-api --resource-group devresume-rg --query "properties.template.containers[0].env"
 ```
 
-## 5. Verification
+## 6. Verification
 
 ```powershell
 $Fqdn = az containerapp show --name devresume-api --resource-group devresume-rg `
@@ -99,7 +119,7 @@ curl "https://$Fqdn/health/live"   # liveness probe
 curl "https://$Fqdn/health/ready"  # readiness probe (db/AI pipeline)
 ```
 
-Confirmed live (2026-08-20):
+Confirmed live on Supabase (2026-08-20):
 
 ```
 $ curl https://devresume-api.salmondune-b6d2a6eb.centralindia.azurecontainerapps.io/health
@@ -115,6 +135,6 @@ The FQDN follows the pattern `https://<app-name>.<random-suffix>.<region>.azurec
 az containerapp logs show --name devresume-api --resource-group devresume-rg --tail 30
 ```
 
-If migrations fail there, check in this order: (1) the Postgres extension allow-list (Section 2's gotcha — the actual cause hit here), (2) the Postgres firewall rule (Section 2's `--public-access 0.0.0.0`), (3) a missing `sslmode=require` in `DATABASE_URL`.
+If migrations fail there, check in this order: (1) using the direct Supabase host instead of the pooler (IPv6 unreachable from Azure), (2) a wrong/un-encoded password in `DATABASE_URL`, (3) a missing `sslmode=require`.
 
 Since `min-replicas 0` is set for cost control, the app scales to zero when idle — the first request after a quiet period is a cold start (image pull + Rust process boot + migration check) and can take 20–40+ seconds. Subsequent requests are fast until it scales back down.
