@@ -1,3 +1,12 @@
+---
+title: DevResume API
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+---
+
 # DevResume AI - Rust API Backend
 
 > High-Performance Micro-Crate Rust Backend Engine powering **DevResume AI**.

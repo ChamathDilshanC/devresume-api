@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y ca-certificates libssl3 && rm -rf /var/
 
 COPY --from=builder /app/target/release/api /app/devresume-api
 
-EXPOSE 8080
+# Hugging Face Spaces (Docker SDK) requires the container to listen on 7860.
+ENV PORT=7860
+
+EXPOSE 7860
 
 CMD ["/app/devresume-api"]
